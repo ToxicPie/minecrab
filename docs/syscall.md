@@ -24,7 +24,7 @@ Some system calls cost cryptocurrency to execute. If the calling process's user 
 |0x12|ReadMapDetail|addr|x1|y1|x2|y2||
 |0x13|FetchChallenge|addr|max_len|||||
 |0x14|SolveChallenge|nonce[0]|nonce[1]|nonce[2]|nonce[3]|||
-|0x15|PathFind|x|y|n||||
+|0x15|PathFind|addr|x|y|n|||
 |0x20|Attack1|x|y|||||
 |0x21|Attack2|x|y|||||
 |0x30|UpdateCode|mem_addr|code_addr|n||||
@@ -158,7 +158,7 @@ Return value:
 
 Finds a shortest path from the calling process's location to the target location `(x, y)` in at most `n` moves. `n` is at most 16.
 
-On success, `2 * len(path)` bytes are written to memory starting at `addr` denoting coordinates on the found path: `x1, y1, x2, y2, x3, y3, ..., x, y`, i.e., the path is `current location -> (x1, y1) -> (x2, y2) -> ... -> (x, y)`. All tiles on the path will be empty at the time of calling.
+On success, `2 * len(path)` bytes are written to memory starting at `addr` denoting coordinates on the found path: `x1, y1, x2, y2, x3, y3, ..., x, y`, i.e., the path is `current location -> (x1, y1) -> (x2, y2) -> ... -> (x, y)`. All tiles on the path will contain no other processes at the time of calling.
 
 Return value:
 - On success: Length of the path

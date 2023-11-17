@@ -235,7 +235,9 @@ impl GameMap {
                         cur_loc.0.wrapping_add_signed(dx),
                         cur_loc.1.wrapping_add_signed(dy),
                     );
-                    if self.get_cell(new_loc).is_empty() && !prev.contains_key(&new_loc) {
+                    if self.get_cell(new_loc).get_process().is_none()
+                        && !prev.contains_key(&new_loc)
+                    {
                         prev.insert(new_loc, cur_loc);
                         queue.push_back((dis + 1, new_loc));
                     }
