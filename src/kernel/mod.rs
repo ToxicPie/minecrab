@@ -238,6 +238,13 @@ impl Kernel {
         self.game_map.move_process_to(pid, location)
     }
 
+    pub fn teleport_process_to(&mut self, pid: u16, location: Location) -> bool {
+        let Some(new_location) = self.game_map.find_empty_location_nearby(location, 5, 2) else {
+            return false;
+        };
+        self.game_map.move_process_to(pid, new_location)
+    }
+
     pub fn pathfind_process_to(
         &mut self,
         pid: u16,

@@ -355,6 +355,61 @@ syscall_category! {
                 Some(path.len() as u16)
             }
         },
+
+        エクスプロージョン<0x40> {
+            compute_cost() {
+                wallet!(
+                    StarSleepShortage: -10000,
+                    Ｅｘｐｌｏｓｉｏｎ: 1,
+                )
+            }
+            call(kernel, pid, x, y) {
+                if kernel.get_process(pid).is_init() {
+                    return None;
+                }
+                let x = x as u8;
+                let y = y as u8;
+                let mut ret = 0;
+                for i in -7..=7 {
+                    for j in -7..=7 {
+                        let tx = x.wrapping_add_signed(i);
+                        let ty = y.wrapping_add_signed(j);
+                        let Some(target_pid) = kernel.get_map_cell((tx, ty)).get_process() else {
+                            continue;
+                        };
+                        if kernel.get_process(target_pid).is_init() {
+                            continue;
+                        }
+                        kernel.kill_process_recursive(target_pid);
+                        ret += 1;
+                        log_event(GameEvent::Attack {
+                            attacker_pid: pid,
+                            defender_pid: target_pid,
+                        });
+                    }
+                }
+                Some(ret)
+            }
+        },
+
+        Teleport<0x41> {
+            compute_cost() {
+                wallet!(DogeCoin: 32)
+            }
+            call(kernel, pid, target_pid) {
+                if !kernel.has_process(target_pid)
+                    || kernel.get_process_owner(pid) != kernel.get_process_owner(target_pid)
+                {
+                    return None;
+                }
+                let location = kernel.get_process_location(target_pid);
+                if kernel.teleport_process_to(pid, location) {
+                    Some(1)
+                } else {
+                    None
+                }
+            }
+        },
     ]
 }
 

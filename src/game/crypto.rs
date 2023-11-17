@@ -11,6 +11,7 @@ pub enum CryptoCurrency {
     Ethereum,
     BitCoin,
     CrabCoin,
+    Ｅｘｐｌｏｓｉｏｎ,
 }
 
 #[derive(Default, Serialize)]
@@ -37,8 +38,8 @@ impl Wallet {
     }
 
     pub fn convert_to_score(&self) -> i64 {
-        let [doge, sleep, eth, bitcoin, crab] = self.assets;
-        let base_score = doge * 3 + sleep * -1 + eth * 420 + bitcoin * 35_466;
+        let [doge, sleep, eth, bitcoin, crab, _] = self.assets;
+        let base_score = doge * 3 + sleep * -1 + eth * 420 + bitcoin * 35_995;
         let multiplier = 1.0 + 0.01 * crab as f64;
         (base_score as f64 * multiplier).round() as i64
     }
@@ -50,6 +51,7 @@ impl Wallet {
             Ethereum: 128,
             BitCoin: 0,
             CrabCoin: 0,
+            Ｅｘｐｌｏｓｉｏｎ: 1,
         )
     }
 }

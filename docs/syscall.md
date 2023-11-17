@@ -29,8 +29,8 @@ Some system calls cost cryptocurrency to execute. If the calling process's user 
 |0x21|Attack2|x|y|||||
 |0x30|UpdateCode|mem_addr|code_addr|n||||
 |0x31|ShareMemory|pid|dst_addr|src_addr|n|||
-|????|<ruby>???<rt>？？？</rt></ruby>|?|?|?|?|?|?|
-|????|???|?|?|?|?|?|?|
+|0x40|<ruby>Ｅｘｐｌｏｓｉｏｎ<rt>エクスプロージョン</rt></ruby>|x|y|?|?|?|?|
+|0x41|Teleport|pid|?|?|?|?|?|
 
 ## Game Syscalls
 
@@ -162,6 +162,34 @@ On success, `2 * len(path)` bytes are written to memory starting at `addr` denot
 
 Return value:
 - On success: Length of the path
+- On failure: 0
+
+### <ruby>Ｅｘｐｌｏｓｉｏｎ<rt>エクスプロージョン</rt></ruby>
+
+`explosion(x, y)`
+
+> Cost: -10000 StarSleepShortage
+
+Attacks all processes within a 15x15 square centered on the target location `(x, y)`. Init cannot use this attack.
+
+On a successful attack, all non-init processes in the target area are killed.
+
+This system call can only be used once per user per game.
+
+Return value:
+- On success: The number of targets attacked
+- On failure: 0
+
+### Teleport
+
+`teleport(pid)`
+
+> Cost: 32 DogeCoin
+
+Instantly moves to a random empty square within a 5x5 square centered on the target process. The target process must be owned by the same user as the calling process. Init cannot use this system call. 5 attempts are made to choose an empty square before this system call fails.
+
+Return value:
+- On success: 1
 - On failure: 0
 
 ## Process Syscalls
