@@ -29,8 +29,8 @@ Some system calls cost cryptocurrency to execute. If the calling process's user 
 |0x21|Attack2|x|y|||||
 |0x30|UpdateCode|mem_addr|code_addr|n||||
 |0x31|ShareMemory|pid|dst_addr|src_addr|n|||
-|0x40|<ruby>Ｅｘｐｌｏｓｉｏｎ<rt>エクスプロージョン</rt></ruby>|x|y|?|?|?|?|
-|0x41|Teleport|pid|?|?|?|?|?|
+|0x40|<ruby>Ｅｘｐｌｏｓｉｏｎ<rt>エクスプロージョン</rt></ruby>|x|y|||||
+|0x41|Teleport|pid||||||
 
 ## Game Syscalls
 
