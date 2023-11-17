@@ -1,0 +1,110 @@
+mov8 23 <reg><reg>
+mov16 22 <reg><reg>
+mov8 21 <reg> <imm8>
+mov16 20 <reg> <imm16>
+load8 25 <reg> <mem>
+load16 24 <reg> <mem>
+store8 29 <mem> <reg>
+store16 28 <mem> <reg>
+store8 27 <mem> <imm8>
+store16 26 <mem> <imm16>
+lea 8d <reg> <mem>
+xchg 92 <reg><reg>
+sex16 62 <reg>
+cmova d6 <reg><reg>
+cmova16 e6 <reg> <imm16>
+cmovae d7 <reg><reg>
+cmovae16 e7 <reg> <imm16>
+cmovb d8 <reg><reg>
+cmovb16 e8 <reg> <imm16>
+cmovbe d9 <reg><reg>
+cmovbe16 e9 <reg> <imm16>
+cmove da <reg><reg>
+cmove16 ea <reg> <imm16>
+cmovne db <reg><reg>
+cmovne16 eb <reg> <imm16>
+cmovg dc <reg><reg>
+cmovg16 ec <reg> <imm16>
+cmovge dd <reg><reg>
+cmovge16 ed <reg> <imm16>
+cmovl de <reg><reg>
+cmovl16 ee <reg> <imm16>
+cmovle df <reg><reg>
+cmovle16 ef <reg> <imm16>
+push8 50 <reg>
+push16 51 <reg>
+push8 52 <imm8>
+push16 53 <imm16>
+pop8 60 <reg>
+pop16 61 <reg>
+memcpy 71 <reg> <mem> <mem>
+memcpy 81 <reg> <mem> <reg>
+memcpy 82 <reg> <mem> <imm8>
+add16 c4 <reg><reg>
+add8 c5 <reg> <imm8>
+add16 c6 <reg> <imm16>
+sub16 b4 <reg><reg>
+sub8 b5 <reg> <imm8>
+sub16 b6 <reg> <imm16>
+mul16 a4 <reg><reg> <reg>
+mul8 a5 <reg><reg> <imm8>
+mul16 a6 <reg><reg> <imm16>
+mullo16 94 <reg><reg>
+mullo8 95 <reg> <imm8>
+mullo16 96 <reg> <imm16>
+imul16 84 <reg><reg> <reg>
+imul8 85 <reg><reg> <imm8>
+imul16 86 <reg><reg> <imm16>
+div16 74 <reg><reg> <reg>
+div8 75 <reg><reg> <imm8>
+div16 76 <reg><reg> <imm16>
+idiv16 64 <reg><reg> <reg>
+idiv8 65 <reg><reg> <imm8>
+idiv16 66 <reg><reg> <imm16>
+neg 7f <reg>
+abs 8f <reg>
+cmp16 54 <reg><reg>
+cmp8 55 <reg> <imm8>
+cmp16 56 <reg> <imm16>
+not 80 <reg>
+and16 37 <reg><reg>
+and8 36 <reg> <imm8>
+and16 46 <reg> <imm16>
+or16 48 <reg><reg>
+or8 47 <reg> <imm8>
+or16 57 <reg> <imm16>
+xor16 59 <reg><reg>
+xor8 58 <reg> <imm8>
+xor16 68 <reg> <imm16>
+nand16 6a <reg><reg>
+nand8 69 <reg> <imm8>
+nand16 79 <reg> <imm16>
+nor16 7b <reg><reg>
+nor8 7a <reg> <imm8>
+nor16 8a <reg> <imm16>
+xnor16 8c <reg><reg>
+xnor8 8b <reg> <imm8>
+xnor16 9b <reg> <imm16>
+shr 9d <reg><reg>
+shr 9c <reg> <imm8>
+sar ae <reg><reg>
+sar ad <reg> <imm8>
+shl bf <reg><reg>
+shl be <reg> <imm8>
+ctz f0 <reg><reg>
+clz e0 <reg><reg>
+popcnt d0 <reg><reg>
+rol c0 <reg><reg>
+rol c1 <reg> <imm8>
+ror b0 <reg><reg>
+ror b1 <reg> <imm8>
+bswap a0 <reg>
+pext 90 <reg><reg>
+pext 91 <reg> <imm16>
+call fe <reg>
+call fd <imm16>
+ret c3
+nop 6e
+op 6f
+p 70
+syscall 0f
