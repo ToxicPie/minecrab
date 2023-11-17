@@ -14,6 +14,6 @@ For more details, read the files in the [docs](./docs/) folder. Note that docume
 
 ## How To Play
 
-Write a good AI program and upload the bytecode file to the system. You also need to upload an initial memory file for the program. Both files must be exactly 65536 bytes, otherwise it is undefined behavior.
+Write a good AI program and assemble it into a bytecode file (The [assembler](./assembler/ihopethisworks.py) tool might be useful.) You also need to prepare an initial memory file for the program. Both files must be exactly 65536 bytes, otherwise it is undefined behavior.
 
-Then just sit back and watch all the processes fight!
+Then run the game as described in [game setup](docs/game-setup.md), and sit back and watch all the processes fight!
