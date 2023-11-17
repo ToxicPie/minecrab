@@ -24,10 +24,13 @@ Some system calls cost cryptocurrency to execute. If the calling process's user 
 |0x12|ReadMapDetail|addr|x1|y1|x2|y2||
 |0x13|FetchChallenge|addr|max_len|||||
 |0x14|SolveChallenge|nonce[0]|nonce[1]|nonce[2]|nonce[3]|||
+|0x15|PathFind|x|y|n||||
 |0x20|Attack1|x|y|||||
 |0x21|Attack2|x|y|||||
 |0x30|UpdateCode|mem_addr|code_addr|n||||
 |0x31|ShareMemory|pid|dst_addr|src_addr|n|||
+|????|<ruby>???<rt>？？？</rt></ruby>|?|?|?|?|?|?|
+|????|???|?|?|?|?|?|?|
 
 ## Game Syscalls
 
@@ -35,7 +38,7 @@ Some system calls cost cryptocurrency to execute. If the calling process's user 
 
 `move(x, y)`
 
-> Cost: 1 Dogecoin, -1 StarSleepShortage
+> Cost: 1 Dogecoin
 
 Moves the process to the coordinates `(x, y)`. `x` and `y` are taken modulo 256. The destination must be within a 3x3 square centered on the process, and be different from the current location. Init cannot move.
 
@@ -92,7 +95,7 @@ Return value:
 
 `fetch_challenge(addr, max_len)`
 
-> Cost: -1 StarSleepShortage
+> Cost: Free
 
 Writes info about the crypto challenge at the calling process's location into the memory area starting from `addr`. The target process must be owned by the same user. The structure of the data written is as follows. Data are in little-endian. If total data length exceeds `max_len`, nothing is written.
 
@@ -111,13 +114,13 @@ Return value:
 
 `solve_challenge(nonce[0], nonce[1], nonce[2], nonce[3])`
 
-> Cost: 1 Dogecoin
+> Cost: Free
 
-Attempts to solve the crypto challenge at the calling process's location. If the attempt succeeds, the user is awarded the challenge's reward. This syscall's cost is always charged.
+Attempts to solve the crypto challenge at the calling process's location. If the attempt succeeds, the user is awarded the challenge's reward. If the attempt fails or there is no crypto at the location, the calling process is killed.
 
 Return value:
 - Correct: 1
-- Incorrect or no challenge: 0
+- Incorrect or failure: 💀
 
 ### Attack1
 
@@ -145,6 +148,20 @@ On a successful attack, the target process executes undefined behavior.
 
 Return value:
 - On success: 1
+- On failure: 0
+
+### PathFind
+
+`path_find(addr, x, y, n)`
+
+> Cost: `n` DogeCoins
+
+Finds a shortest path from the calling process's location to the target location `(x, y)` in at most `n` moves. `n` is at most 16.
+
+On success, `2 * len(path)` bytes are written to memory starting at `addr` denoting coordinates on the found path: `x1, y1, x2, y2, x3, y3, ..., x, y`, i.e., the path is `current location -> (x1, y1) -> (x2, y2) -> ... -> (x, y)`. All tiles on the path will be empty at the time of calling.
+
+Return value:
+- On success: Length of the path
 - On failure: 0
 
 ## Process Syscalls
@@ -204,7 +221,7 @@ Return value:
 
 `get_process_info(pid, addr)`
 
-> Cost: -1 StarSleepShortage
+> Cost: Free
 
 Writes info about a process into the memory area starting from `addr`. The target process must be owned by the same user. 10 bytes are written, and the structure of the data written is as follows. Data are in little-endian.
 

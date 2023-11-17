@@ -26,6 +26,14 @@ You should avoid getting too much of this currency. Each StarSleepShortage decre
 
 The currency used to do process-related tasks like forking, killing, renicing, etc.
 
+### BitCoin
+
+Worth a lot of score.
+
+### CrabCoin
+
+Each CrabCoin gives the user 1% additional score (additive) from crypto at the end of the game.
+
 ## Cryptocurrency Challenges
 
 ### DogChallenge
@@ -54,3 +62,21 @@ It rewards a negative amount of StarSleepShortage.
 `FetchChallenge`'s `data` field has 2 bytes: a 16-bit integer `x`, which is always odd. Submit `(y, 0, 0, 0)` such that `x * y mod 2^16 == 1`.
 
 It rewards Ethereum and StarSleepShortage.
+
+### BabyBtcChallenge
+
+> Name: `btc`
+> Numeric ID: `0xb7c`
+
+`FetchChallenge`'s `data` field has 32 bytes: `challenge`. Submit a 8-byte `nonce` such that `nonce == sha256(challenge)[:8]`. The 8-byte nonce is the concatenation of 4 16-bit integers in little-endian.
+
+It rewards 1 BitCoin.
+
+### CrabChallenge
+
+> Name: `crab`
+> Numeric ID: `0xf980`
+
+`FetchChallenge`'s `data` field has 40 bytes: 4-byte `seed` in little-endian, 4-byte `hash` in little-endian, and 32 bytes `challenge`. Submit a 8-byte `nonce` such that `murmurhash3_32(nonce + challenge, seed) == hash`. The 8-byte nonce is the concatenation of 4 16-bit integers in little-endian.
+
+It rewards 1 CrabCoin.

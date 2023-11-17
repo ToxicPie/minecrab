@@ -2,7 +2,7 @@ use crate::game::crypto::*;
 use crate::game::replay::{log_event, GameEvent};
 
 use rand::{thread_rng, Rng};
-use std::collections::HashMap;
+use std::collections::{HashMap, VecDeque};
 
 pub const MAP_WIDTH: usize = 256;
 pub const MAP_HEIGHT: usize = 256;
@@ -205,5 +205,43 @@ impl GameMap {
         self.get_cell_mut(location).process = Some(pid);
         log_event(GameEvent::Move { pid, location });
         true
+    }
+
+    pub fn pathfind(
+        &self,
+        start: Location,
+        end: Location,
+        max_len: usize,
+    ) -> Option<Vec<Location>> {
+        let mut prev = HashMap::new();
+        prev.insert(start, start);
+        let mut queue = VecDeque::new();
+        queue.push_back((0, start));
+        while queue.front().is_some_and(|&(dis, _)| dis <= max_len) {
+            let (dis, cur_loc) = queue.pop_front().unwrap();
+            if cur_loc == end {
+                let mut cur = end;
+                let mut path = vec![];
+                while cur != start {
+                    path.push(cur);
+                    cur = *prev.get(&cur).unwrap();
+                }
+                path.reverse();
+                return Some(path);
+            }
+            for dx in -1..=1 {
+                for dy in -1..=1 {
+                    let new_loc = (
+                        cur_loc.0.wrapping_add_signed(dx),
+                        cur_loc.1.wrapping_add_signed(dy),
+                    );
+                    if self.get_cell(new_loc).is_empty() && !prev.contains_key(&new_loc) {
+                        prev.insert(new_loc, cur_loc);
+                        queue.push_back((dis + 1, new_loc));
+                    }
+                }
+            }
+        }
+        None
     }
 }

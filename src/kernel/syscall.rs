@@ -127,7 +127,7 @@ syscall_category! {
 
         GetProcessInfo<0x04> {
             compute_cost() {
-                wallet!(StarSleepShortage: -1)
+                wallet!()
             }
             call(kernel, pid, target_pid, addr) {
                 if !kernel.has_process(target_pid)
@@ -185,10 +185,7 @@ syscall_category! {
     make_game_syscalls() => [
         Move<0x10> {
             compute_cost() {
-                wallet!(
-                    DogeCoin: 1,
-                    StarSleepShortage: -1
-                )
+                wallet!(DogeCoin: 1)
             }
             call(kernel, pid, x, y) {
                 if kernel.get_process(pid).is_init() {
@@ -276,7 +273,7 @@ syscall_category! {
 
         FetchChallenge<0x13> {
             compute_cost() {
-                wallet!(StarSleepShortage: -1)
+                wallet!()
             }
             call(kernel, pid, addr, max_len) {
                 let data = kernel.fetch_challenge_data(pid)?;
@@ -290,7 +287,7 @@ syscall_category! {
 
         SolveChallenge<0x14> {
             compute_cost() {
-                wallet!(DogeCoin: 1)
+                wallet!()
             }
             call(kernel, pid, nonce0, nonce1, nonce2, nonce3) {
                 let nonce = (nonce0, nonce1, nonce2, nonce3);
@@ -341,6 +338,21 @@ syscall_category! {
                     defender_pid: target_pid,
                 });
                 Some(1)
+            }
+        },
+
+        PathFind<0x15> {
+            compute_cost(_addr, _x, _y, n) {
+                wallet!(DogeCoin: n as i64)
+            }
+            call(kernel, pid, addr, x, y, n) {
+                if n > 16 {
+                    return None;
+                }
+                let path = kernel.pathfind_process_to(pid, (x as u8, y as u8), n as usize)?;
+                let data = path.iter().map(|&(x, y)| [x, y]).flatten().collect::<Vec<_>>();
+                kernel.get_process_mut(pid).emulator.write_bytes_to_mem(addr, &data);
+                Some(path.len() as u16)
             }
         },
     ]

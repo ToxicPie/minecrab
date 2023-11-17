@@ -1,5 +1,7 @@
+use murmurhash3::murmurhash3_x86_32;
 use rand::random;
 use serde::Serialize;
+use sha2::{Digest, Sha256};
 
 pub const CRYPTO_TYPES: usize = std::mem::variant_count::<CryptoCurrency>();
 
@@ -7,6 +9,8 @@ pub enum CryptoCurrency {
     DogeCoin,
     StarSleepShortage,
     Ethereum,
+    BitCoin,
+    CrabCoin,
 }
 
 #[derive(Default, Serialize)]
@@ -33,8 +37,10 @@ impl Wallet {
     }
 
     pub fn convert_to_score(&self) -> i64 {
-        let [doge, sleep, eth] = self.assets;
-        doge * 3 + sleep * -1 + eth * 420
+        let [doge, sleep, eth, bitcoin, crab] = self.assets;
+        let base_score = doge * 3 + sleep * -1 + eth * 420 + bitcoin * 35_466;
+        let multiplier = 1.0 + 0.01 * crab as f64;
+        (base_score as f64 * multiplier).round() as i64
     }
 
     pub fn get_newbie_welcome_pack() -> Self {
@@ -42,6 +48,8 @@ impl Wallet {
             DogeCoin: 1337,
             StarSleepShortage: -690,
             Ethereum: 128,
+            BitCoin: 0,
+            CrabCoin: 0,
         )
     }
 }
@@ -81,6 +89,8 @@ pub fn generate_crypto_challenge(name: &str, difficulty: i64) -> Option<Box<dyn 
         "bed" => Box::new(BedChallenge::default()),
         "dog" => Box::new(DogChallenge::default()),
         "ether" => Box::new(EtherChallenge::default()),
+        "btc" => Box::new(BabyBtcChallenge::default()),
+        "crab" => Box::new(CrabChallenge::default()),
         _ => return None,
     };
     challenge.generate(difficulty);
@@ -187,5 +197,91 @@ impl CryptoChallenge for EtherChallenge {
     }
     fn verify(&self, nonce: (u16, u16, u16, u16)) -> bool {
         nonce.0.wrapping_mul(self.challenge) == 1 && nonce.1 == 0 && nonce.2 == 0 && nonce.3 == 0
+    }
+}
+
+#[derive(Default)]
+pub struct BabyBtcChallenge {
+    challenge: [u8; 32],
+}
+
+impl CryptoChallenge for BabyBtcChallenge {
+    fn get_numeric_id(&self) -> u16 {
+        0xb7c
+    }
+    fn get_name(&self) -> &'static str {
+        "btc"
+    }
+    fn generate(&mut self, _difficulty: i64) {
+        self.challenge = random();
+    }
+    fn get_reward(&self) -> Wallet {
+        wallet!(
+            BitCoin: 1,
+        )
+    }
+    fn get_difficulty(&self) -> u16 {
+        1
+    }
+    fn get_challenge_data(&self) -> Vec<u8> {
+        self.challenge.into()
+    }
+    fn verify(&self, nonce: (u16, u16, u16, u16)) -> bool {
+        let data = [
+            nonce.0.to_le_bytes(),
+            nonce.1.to_le_bytes(),
+            nonce.2.to_le_bytes(),
+            nonce.3.to_le_bytes(),
+        ]
+        .concat();
+        Sha256::digest(self.challenge)[..data.len()] == data
+    }
+}
+
+#[derive(Default)]
+pub struct CrabChallenge {
+    seed: u32,
+    hash: u32,
+    challenge: [u8; 32],
+}
+
+impl CryptoChallenge for CrabChallenge {
+    fn get_numeric_id(&self) -> u16 {
+        '🦀' as u16
+    }
+    fn get_name(&self) -> &'static str {
+        "crab"
+    }
+    fn generate(&mut self, _difficulty: i64) {
+        self.challenge = random();
+        self.seed = random();
+        self.hash = random();
+    }
+    fn get_reward(&self) -> Wallet {
+        wallet!(
+            CrabCoin: 1,
+        )
+    }
+    fn get_difficulty(&self) -> u16 {
+        1
+    }
+    fn get_challenge_data(&self) -> Vec<u8> {
+        [
+            &self.seed.to_le_bytes()[..],
+            &self.hash.to_le_bytes()[..],
+            &self.challenge[..],
+        ]
+        .concat()
+    }
+    fn verify(&self, nonce: (u16, u16, u16, u16)) -> bool {
+        let mut data = [
+            nonce.0.to_le_bytes(),
+            nonce.1.to_le_bytes(),
+            nonce.2.to_le_bytes(),
+            nonce.3.to_le_bytes(),
+        ]
+        .concat();
+        data.extend(self.challenge);
+        murmurhash3_x86_32(&data, self.seed) == self.hash
     }
 }

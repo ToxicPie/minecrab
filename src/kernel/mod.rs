@@ -201,7 +201,7 @@ impl Kernel {
         parent.children.retain(|child| *child != pid);
     }
 
-    pub fn kill_process(&mut self, pid: u16) {
+    fn kill_process(&mut self, pid: u16) {
         log_event(GameEvent::Kill { pid });
         self.get_owner_user_mut(pid).num_processes -= 1;
         if self.get_process(pid).is_init() {
@@ -238,6 +238,16 @@ impl Kernel {
         self.game_map.move_process_to(pid, location)
     }
 
+    pub fn pathfind_process_to(
+        &mut self,
+        pid: u16,
+        location: Location,
+        max_len: usize,
+    ) -> Option<Vec<Location>> {
+        let old_location = self.game_map.get_process_location(pid);
+        self.game_map.pathfind(old_location, location, max_len)
+    }
+
     pub fn fetch_challenge_data(&self, pid: u16) -> Option<Vec<u8>> {
         let location = self.game_map.get_process_location(pid);
         self.game_map.get_cell(location).crypto_data()
@@ -255,6 +265,7 @@ impl Kernel {
             });
             1
         } else {
+            self.kill_process_recursive(pid);
             0
         }
     }
