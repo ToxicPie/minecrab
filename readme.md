@@ -1,5 +1,7 @@
 # Minecrab
 
+Note: This game was originally created as a challenge for [HITCON CTF 2023 Final](https://ctftime.org/event/2035). Outside of the contest I don't believe anyone would unironically play this game.
+
 Minecrab is a [game](./docs/tldr.md) in which players write bytecode to fight each other on a 2D map.
 
 Each player submits two files, bytecode and memory, which are used to created the init process of the user. After all init processes are created, they are on their own and the players have no control over them. Processes can create new processes, mine resources, attack other players' processes, etc. to win the game. Try to make the best AI fighter!
